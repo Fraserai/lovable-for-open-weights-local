@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+node_modules/
+.venv/
+__pycache__/
+.next/
+/data/
+*.jsonl
+/runs/
+.pytest_cache/
+.DS_Store
+.venv-svc/
+wr-data/
+weightroom.db*

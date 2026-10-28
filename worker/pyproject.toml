@@ -1,0 +1,45 @@
+[project]
+name = "trainloop"
+version = "0.1.0"
+description = "Weightroom: train an open model on your data and own the weights (CLI + hosted service)"
+requires-python = ">=3.11"
+dependencies = [
+    "httpx>=0.28",
+    "huggingface_hub>=1.32",
+    "python-dotenv>=1.0",
+    "typer>=0.19",
+    # The hosted service (weightroom): API, MCP server, worker, billing
+    "fastapi>=0.149",
+    "uvicorn[standard]>=0.30",
+    "sqlalchemy>=2.0",
+    "psycopg[binary]>=3.2",
+    "mcp>=2.3,<3",
+    "boto3>=1.35",
+    "stripe>=16",
+    "cryptography>=43",
+]
+
+[project.scripts]
+trainloop = "trainloop.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+# Trainer 2. Heavy (torch/transformers). Skip it with: uv sync --no-group tinker
+# 0.32 changed ServiceClient's keyword arguments; the cookbook resumes runs from their log directory.
+tinker = ["tinker>=0.34", "tinker-cookbook>=0.5.7", "certifi"]
+# `trainloop prepare` (documents -> training data). Parked for the hosted service; heavy (torch).
+documents = ["docling>=2.129"]
+
+[tool.uv]
+default-groups = ["dev", "tinker", "documents"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/trainloop", "src/weightroom"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
